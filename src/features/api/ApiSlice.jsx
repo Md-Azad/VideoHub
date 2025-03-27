@@ -8,6 +8,8 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getVideos: builder.query({
       query: () => "/videos",
+      keepUnusedDataFor: 600,
+      providesTags: ["Videos"],
     }),
     getVideo: builder.query({
       query: (id) => `/videos/${id}`,
@@ -20,8 +22,28 @@ export const apiSlice = createApi({
         return links;
       },
     }),
+    addVideo: builder.mutation({
+      query: (data) => ({
+        url: "/videos",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Videos"],
+    }),
+    editVideo: builder.mutation({
+      query: (id, data) => ({
+        url: `/videos/edit/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Videos"],
+    }),
   }),
 });
 
-export const { useGetVideosQuery, useGetVideoQuery, useGetRelatedVideoQuery } =
-  apiSlice;
+export const {
+  useGetVideosQuery,
+  useGetVideoQuery,
+  useGetRelatedVideoQuery,
+  useAddVideoMutation,
+} = apiSlice;

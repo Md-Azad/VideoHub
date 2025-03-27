@@ -1,42 +1,100 @@
+import { useParams } from "react-router-dom";
 import TextArea from "../ui/TextArea";
 import TextInput from "../ui/TextInput";
+import { useGetVideoQuery } from "../../features/api/ApiSlice";
+import { useState } from "react";
 
 const Form = () => {
+  const { videoId } = useParams();
+  const { data, isLoading, isError } = useGetVideoQuery(videoId);
+
+  const {
+    link: initialLink,
+    description: initalDescription,
+    thumbnail: initialThumbnail,
+    title: initialTitle,
+    duration: initialDuration,
+    author: initialAuthor,
+    date: initialDate,
+    views: initialViews,
+  } = data;
+
+  const [title, setTitle] = useState(initialTitle);
+  const [author, setAuthor] = useState(initialAuthor);
+  const [description, setDescription] = useState(initalDescription);
+  const [link, setLink] = useState(initialLink);
+  const [thumbnail, setThumbnail] = useState(initialThumbnail);
+  const [date, setDate] = useState(initialDate);
+  const [duration, setDuration] = useState(initialDuration);
+  const [views, setViews] = useState(initialViews);
+
   return (
     <form action="#" method="POST">
       <div className="shadow overflow-hidden sm:rounded-md">
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="grid grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <TextInput title="Video Title" />
+              <TextInput
+                title="Video Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6 sm:col-span-3">
-              <TextInput title="Author" />
+              <TextInput
+                title="Author"
+                value={author}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6">
-              <TextArea title="Description" />
+              <TextArea
+                title="Description"
+                value={description}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6">
-              <TextInput title="YouTube Video link" />
+              <TextInput
+                title="YouTube Video link"
+                value={link}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6">
-              <TextInput title="Thumbnail link" />
+              <TextInput
+                title="Thumbnail link"
+                value={thumbnail}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-              <TextInput title="Upload Date" />
+              <TextInput
+                title="Upload Date"
+                value={date}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-              <TextInput title="Video Duration" />
+              <TextInput
+                title="Video Duration"
+                value={duration}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-              <TextInput title="Video no of views" />
+              <TextInput
+                title="Video no of views"
+                value={views}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
           </div>
         </div>
