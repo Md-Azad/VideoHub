@@ -1,14 +1,16 @@
-import { useParams } from "react-router-dom";
 import TextArea from "../ui/TextArea";
 import TextInput from "../ui/TextInput";
-import { useGetVideoQuery } from "../../features/api/ApiSlice";
+import { useEditVideoMutation } from "../../features/api/ApiSlice";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Form = () => {
-  const { videoId } = useParams();
-  const { data, isLoading, isError } = useGetVideoQuery(videoId);
+const Form = ({ video }) => {
+  const navigate = useNavigate();
+  const [editVideo, { isLoading, isSuccess, isError }] = useEditVideoMutation();
+  console.log(isSuccess);
 
   const {
+    id,
     link: initialLink,
     description: initalDescription,
     thumbnail: initialThumbnail,
@@ -17,7 +19,7 @@ const Form = () => {
     author: initialAuthor,
     date: initialDate,
     views: initialViews,
-  } = data;
+  } = video;
 
   const [title, setTitle] = useState(initialTitle);
   const [author, setAuthor] = useState(initialAuthor);
@@ -28,8 +30,26 @@ const Form = () => {
   const [duration, setDuration] = useState(initialDuration);
   const [views, setViews] = useState(initialViews);
 
+  const handleEditVideo = (e) => {
+    e.preventDefault();
+    editVideo({
+      id,
+      data: {
+        title,
+        author,
+        description,
+        link,
+        thumbnail,
+        date,
+        duration,
+        views,
+      },
+    });
+    navigate("/");
+  };
+
   return (
-    <form action="#" method="POST">
+    <form onSubmit={handleEditVideo} method="POST">
       <div className="shadow overflow-hidden sm:rounded-md">
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="grid grid-cols-6 gap-6">
@@ -45,7 +65,7 @@ const Form = () => {
               <TextInput
                 title="Author"
                 value={author}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setAuthor(e.target.value)}
               />
             </div>
 
@@ -53,7 +73,7 @@ const Form = () => {
               <TextArea
                 title="Description"
                 value={description}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
@@ -61,7 +81,7 @@ const Form = () => {
               <TextInput
                 title="YouTube Video link"
                 value={link}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setLink(e.target.value)}
               />
             </div>
 
@@ -69,7 +89,7 @@ const Form = () => {
               <TextInput
                 title="Thumbnail link"
                 value={thumbnail}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setThumbnail(e.target.value)}
               />
             </div>
 
@@ -77,7 +97,7 @@ const Form = () => {
               <TextInput
                 title="Upload Date"
                 value={date}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setDate(e.target.value)}
               />
             </div>
 
@@ -85,7 +105,7 @@ const Form = () => {
               <TextInput
                 title="Video Duration"
                 value={duration}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setDuration(e.target.value)}
               />
             </div>
 
@@ -93,7 +113,7 @@ const Form = () => {
               <TextInput
                 title="Video no of views"
                 value={views}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setViews(e.target.value)}
               />
             </div>
           </div>

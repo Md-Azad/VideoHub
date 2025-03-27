@@ -13,6 +13,7 @@ export const apiSlice = createApi({
     }),
     getVideo: builder.query({
       query: (id) => `/videos/${id}`,
+      providesTags: (result, error, arg) => [{ type: "Video", id: arg }],
     }),
     getRelatedVideo: builder.query({
       query: (title) => {
@@ -21,6 +22,9 @@ export const apiSlice = createApi({
         const links = `/videos?${likes.join("&")}&_limit=4`;
         return links;
       },
+      providesTags: (result, error, arg) => [
+        { type: "RelatedVideos", id: arg.id },
+      ],
     }),
     addVideo: builder.mutation({
       query: (data) => ({
@@ -31,10 +35,21 @@ export const apiSlice = createApi({
       invalidatesTags: ["Videos"],
     }),
     editVideo: builder.mutation({
-      query: (id, data) => ({
-        url: `/videos/edit/${id}`,
+      query: ({ id, data }) => ({
+        url: `/videos/${id}`,
         method: "PATCH",
         body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        "Videos",
+        { type: "Video", id: arg.id },
+        { type: "RelatedVideos", id: arg.id },
+      ],
+    }),
+    deleteVideo: builder.mutation({
+      query: ({ id }) => ({
+        url: `/videos/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Videos"],
     }),
@@ -46,4 +61,6 @@ export const {
   useGetVideoQuery,
   useGetRelatedVideoQuery,
   useAddVideoMutation,
+  useEditVideoMutation,
+  useDeleteVideoMutation,
 } = apiSlice;
